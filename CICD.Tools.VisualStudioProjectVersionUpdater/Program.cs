@@ -22,8 +22,8 @@
 		public static int Main(string[] args)
 		{
 			var versionOption = new Option<string>(
-				"--version",
-				"The version to apply to the projects. If not provided, an automatic version is generated based on the last stable Git tag and build information.  MSI product versions must have a major version less than 256, a minor version less than 256, and a build version less than 65536. The revision value and labels or metadata provided here are ignored. If not provided an automatic build version will be created based on last stable tag, git information.");
+				"--tag",
+				"The version (without revision) to apply to the projects. If not provided, an automatic version is generated based on the last stable Git tag and build information.  MSI product versions must have a major version less than 256, a minor version less than 256, and a build version less than 65536. The revision value and labels or metadata provided here are ignored. If not provided an automatic build version will be created based on last stable tag, git information.");
 			versionOption.IsRequired = false;
 
 			var revisionOption = new Option<int>(
@@ -61,6 +61,7 @@
 		/// Attempts to generate an automatic version based on the last stable Git tag.
 		/// </summary>
 		/// <param name="workspace">The workspace directory where Git commands will be executed.</param>
+		/// <param name="revision">The revision number to set as the revision number in the projects. Increments retrieved Git tag by one if empty.</param>
 		/// <returns>The generated version or null if unable to generate.</returns>
 		private static string? GenerateAutomaticVersion(string workspace, int revision)
 		{
@@ -74,6 +75,7 @@
 				{
 					return null;
 				}
+
 				string tag = output.Split(Environment.NewLine).FirstOrDefault(tag => !tag.Contains("-"));
 				if (revision == 0)
 				{
@@ -83,6 +85,7 @@
 					tag = String.Join(".", splitTag);
 				}
 
+				Console.WriteLine("Generated Version from Git: " + tag);
 				return tag;
 			}
 			catch (Exception ex)

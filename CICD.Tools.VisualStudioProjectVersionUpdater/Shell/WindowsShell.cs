@@ -36,8 +36,8 @@
 				}
 			};
 
-			cmd.OutputDataReceived += (sender, args) => { outputStream.Append(args.Data); };
-			cmd.ErrorDataReceived += (sender, args) => { errorStream.Append(args.Data); };
+			cmd.OutputDataReceived += (sender, args) => { outputStream.AppendLine(args.Data); };
+			cmd.ErrorDataReceived += (sender, args) => { errorStream.AppendLine(args.Data); };
 			cmd.Start();
 			cmd.BeginOutputReadLine();
 			cmd.BeginErrorReadLine();

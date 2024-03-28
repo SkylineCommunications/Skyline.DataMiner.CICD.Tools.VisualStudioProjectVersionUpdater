@@ -124,6 +124,8 @@
 			// Update the project properties
 			UpdateProjectProperty(ns + "Version", newVersion.ToString(), propertyGroupElement);
 			UpdateProjectProperty(ns + "ProductVersion", newVersion.ToString(), propertyGroupElement);
+
+			Console.WriteLine($"Updated File {FileSystem.Instance.Path.GetFileName(projectFile)} to version:{newVersion.ToString()}");
 		}
 	}
 }

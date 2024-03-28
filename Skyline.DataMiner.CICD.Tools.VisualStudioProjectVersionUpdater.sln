@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CICD.Tools.VisualStudioProjectVersionUpdater", "CICD.Tools.VisualStudioProjectVersionUpdater\CICD.Tools.VisualStudioProjectVersionUpdater.csproj", "{0345E906-4053-4AA5-A02F-6B0B3B75554A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{801B57BE-BC7C-45BF-A76C-E41C24C023CF}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CICD.Tools.VisualStudioProjectVersionUpdaterTests", "CICD.Tools.VisualStudioProjectVersionUpdaterTests\CICD.Tools.VisualStudioProjectVersionUpdaterTests.csproj", "{37FFC3FB-8DC5-475C-A068-41102D77F63E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0345E906-4053-4AA5-A02F-6B0B3B75554A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0345E906-4053-4AA5-A02F-6B0B3B75554A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0345E906-4053-4AA5-A02F-6B0B3B75554A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0345E906-4053-4AA5-A02F-6B0B3B75554A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37FFC3FB-8DC5-475C-A068-41102D77F63E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37FFC3FB-8DC5-475C-A068-41102D77F63E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37FFC3FB-8DC5-475C-A068-41102D77F63E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37FFC3FB-8DC5-475C-A068-41102D77F63E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {41396CAE-8CFA-48D4-959E-C232EB55D7F2}
+	EndGlobalSection
+EndGlobal

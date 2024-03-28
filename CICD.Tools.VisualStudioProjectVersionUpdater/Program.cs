@@ -68,21 +68,23 @@
 			try
 			{
 				var shell = ShellFactory.GetShell();
-				CancellationTokenSource cts = new CancellationTokenSource();
-
-				var commandSuccess = shell.RunCommand("git tag --sort=-creatordate", out var output, out _, cts.Token, workspace);
-				if (!commandSuccess)
+				string tag;
+				using (CancellationTokenSource cts = new CancellationTokenSource())
 				{
-					return null;
-				}
+					var commandSuccess = shell.RunCommand("git tag --sort=-creatordate", out var output, out _, cts.Token, workspace);
+					if (!commandSuccess)
+					{
+						return null;
+					}
 
-				string tag = output.Split(Environment.NewLine).FirstOrDefault(tag => !tag.Contains("-"));
-				if (revision == 0)
-				{
-					// Increment the Build number if revision was 0
-					var splitTag = tag.Split(".");
-					splitTag[2] = Convert.ToString(Convert.ToInt32(splitTag[2]) + 1);
-					tag = String.Join(".", splitTag);
+					tag = output.Split(Environment.NewLine).FirstOrDefault(tag => !tag.Contains("-"));
+					if (revision == 0)
+					{
+						// Increment the Build number if revision was 0
+						var splitTag = tag.Split(".");
+						splitTag[2] = Convert.ToString(Convert.ToInt32(splitTag[2]) + 1);
+						tag = String.Join(".", splitTag);
+					}
 				}
 
 				Console.WriteLine("Generated Version from Git: " + tag);

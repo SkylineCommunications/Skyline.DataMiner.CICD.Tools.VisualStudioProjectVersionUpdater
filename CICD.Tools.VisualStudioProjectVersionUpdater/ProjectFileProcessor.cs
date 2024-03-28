@@ -104,11 +104,22 @@
 			}
 
 			// Create a new version object with clamped values to ensure compatibility
-			Version newVersion = new Version(
-				Math.Clamp(parsedVersion.Major, 1, 255),
-				Math.Clamp(parsedVersion.Minor, 0, 255),
-				Math.Clamp(parsedVersion.Build, 0, 65535),
-				revision);
+			Version newVersion;
+			if (revision != 0)
+			{
+				newVersion = new Version(
+				   Math.Clamp(parsedVersion.Major, 1, 255),
+				   Math.Clamp(parsedVersion.Minor, 0, 255),
+				   Math.Clamp(parsedVersion.Build, 0, 65535),
+				   revision);
+			}
+			else
+			{
+				newVersion = new Version(
+					Math.Clamp(parsedVersion.Major, 1, 255),
+					Math.Clamp(parsedVersion.Minor, 0, 255),
+					Math.Clamp(parsedVersion.Build, 0, 65535));
+			}
 
 			// Update the project properties
 			UpdateProjectProperty(ns + "Version", newVersion.ToString(), propertyGroupElement);

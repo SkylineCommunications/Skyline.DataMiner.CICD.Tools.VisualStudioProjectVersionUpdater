@@ -2,7 +2,9 @@
 {
 	using System;
 	using System.Linq;
+	using System.Xml;
 	using System.Xml.Linq;
+	using System.Xml.XPath;
 
 	using Skyline.DataMiner.CICD.FileSystem;
 
@@ -42,14 +44,24 @@
 			var sdkAttribute = root.Attribute("Sdk");
 			if (sdkAttribute == null) return;
 
-			var propGroup = projectFileDocument.Root.Elements(ns + "PropertyGroup").FirstOrDefault();
 
 			if (sdkAttribute.Value.StartsWith("Microsoft.NET.Sdk") || sdkAttribute.Value.StartsWith("WixToolset.Sdk"))
 			{
-				// Handles version updates except for PackageVersion, which is managed by another tool.
-				SetVersion(version, buildNumber, propGroup);
-			}
+				XmlNamespaceManager xnm = new XmlNamespaceManager(new NameTable());
+				xnm.AddNamespace("x", ns.NamespaceName);
+				var generatePackageOnBuildElement = projectFileDocument.XPathSelectElement("/x:Project/x:PropertyGroup/x:GeneratePackageOnBuild", xnm);
 
+				if (generatePackageOnBuildElement != null && generatePackageOnBuildElement.Value.Equals("true", StringComparison.OrdinalIgnoreCase))
+				{
+					var propGroup = generatePackageOnBuildElement.Parent;
+					SetNuGetVersion(version, buildNumber, propGroup);
+				}
+				else
+				{
+					var propGroup = projectFileDocument.Root.Elements(ns + "PropertyGroup").FirstOrDefault();
+					SetVersion(version, buildNumber, propGroup);
+				}
+			}
 			fs.File.WriteAllText(projectFile, projectFileDocument.ToString());
 		}
 
@@ -124,6 +136,65 @@
 			// Update the project properties
 			UpdateProjectProperty(ns + "Version", newVersion.ToString(), propertyGroupElement);
 			UpdateProjectProperty(ns + "ProductVersion", newVersion.ToString(), propertyGroupElement);
+
+			Console.WriteLine($"Updated File {FileSystem.Instance.Path.GetFileName(projectFile)} to version:{newVersion.ToString()}");
+		}
+
+
+		private void SetNuGetVersion(string version, int revision, XElement propertyGroupElement)
+		{
+			if (propertyGroupElement == null) throw new ArgumentNullException(nameof(propertyGroupElement));
+
+			// Split version string to handle pre-release versions
+			var splitVersion = version.Split('-');
+			if (splitVersion.Length > 2)
+			{
+				throw new ArgumentException($"Invalid version format: {version}. Expected format: 'Major.Minor.Build[-Suffix]'.", nameof(version));
+			}
+
+			var baseVersion = splitVersion[0];
+			bool hasPreRelease = splitVersion.Length == 2;
+			if (hasPreRelease && revision == 0)
+			{
+				throw new ArgumentException("Pre-release version requires a non-zero revision number.", nameof(revision));
+			}
+
+			// Attempt to parse the base version
+			if (!Version.TryParse(baseVersion, out Version parsedVersion))
+			{
+				parsedVersion = new Version(1, 0, 0); // Default version if parsing fails
+			}
+
+			// Create a new version object with clamped values to ensure compatibility
+			Version newVersion;
+			if (revision != 0)
+			{
+				newVersion = new Version(
+				   Math.Clamp(parsedVersion.Major, 1, 255),
+				   Math.Clamp(parsedVersion.Minor, 0, 255),
+				   Math.Clamp(parsedVersion.Build, 0, 65535),
+				   revision);
+			}
+			else
+			{
+				newVersion = new Version(
+					Math.Clamp(parsedVersion.Major, 1, 255),
+					Math.Clamp(parsedVersion.Minor, 0, 255),
+					Math.Clamp(parsedVersion.Build, 0, 65535));
+			}
+
+			// Update the project properties
+			UpdateProjectProperty(ns + "Version", newVersion.ToString(), propertyGroupElement);
+			UpdateProjectProperty(ns + "ProductVersion", newVersion.ToString(), propertyGroupElement);
+
+			if (hasPreRelease)
+			{
+				UpdateProjectProperty(ns + "PackageVersion", newVersion.ToString() + "-" + splitVersion[1], propertyGroupElement);
+			}
+			else
+			{
+				UpdateProjectProperty(ns + "PackageVersion", newVersion.ToString(), propertyGroupElement);
+			}
 
 			Console.WriteLine($"Updated File {FileSystem.Instance.Path.GetFileName(projectFile)} to version:{newVersion.ToString()}");
 		}

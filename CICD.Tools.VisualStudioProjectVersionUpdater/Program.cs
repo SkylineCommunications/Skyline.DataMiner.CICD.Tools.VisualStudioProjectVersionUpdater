@@ -44,7 +44,7 @@
 			solutionFilepath.IsRequired = false;
 			solutionFilepath.LegalFilePathsOnly();
 
-			var rootCommand = new RootCommand("Updates all executables and WiX projects within a solution to a specified version or an automatically generated version.")
+			var rootCommand = new RootCommand("Updates all WiX, Assemblies, executables and NuGet packages within a solution to a specified version or an automatically generated version.")
 			{
 				versionOption,
 				revisionOption,

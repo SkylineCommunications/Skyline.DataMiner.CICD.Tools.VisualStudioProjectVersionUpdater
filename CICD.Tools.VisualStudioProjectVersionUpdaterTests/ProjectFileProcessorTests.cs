@@ -52,10 +52,12 @@
 			xnm.AddNamespace("x", ns.NamespaceName);
 
 			var versionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:Version", xnm);
+			var packageVersionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:PackageVersion", xnm);
 			var productVersionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:ProductVersion", xnm);
 
 			Assert.AreEqual("1.0.15", versionElement?.Value, "versionElement.Value");
 			Assert.AreEqual("1.0.15", productVersionElement?.Value, " productVersionElement.Value");
+			Assert.AreEqual("1.0.15", packageVersionElement?.Value, " packageVersionElement.Value");
 		}
 
 		[TestMethod]
@@ -80,6 +82,7 @@
 
 			Assert.AreEqual("1.0.15.21", versionElement?.Value, "versionElement.Value");
 			Assert.AreEqual("1.0.15.21", productVersionElement?.Value, " productVersionElement.Value");
+			Assert.AreEqual("1.0.15.21", packageVersionElement?.Value, " packageVersionElement.Value");
 		}
 
 		[TestMethod]
@@ -104,7 +107,7 @@
 
 			Assert.AreEqual("1.0.15", versionElement?.Value, "versionElement.Value");
 			Assert.AreEqual("1.0.15", productVersionElement?.Value, " productVersionElement.Value");
-			Assert.IsNull(packageVersionElement);
+			Assert.AreEqual("1.0.15", packageVersionElement?.Value, " packageVersionElement.Value");
 		}
 
 		[TestMethod]
@@ -129,7 +132,7 @@
 
 			Assert.AreEqual("255.255.65535", versionElement?.Value, "versionElement.Value");
 			Assert.AreEqual("255.255.65535", productVersionElement?.Value, " productVersionElement.Value");
-			Assert.IsNull(packageVersionElement);
+			Assert.AreEqual("255.255.65535", packageVersionElement?.Value, " packageVersionElement.Value");
 		}
 
 		[TestMethod]
@@ -168,7 +171,7 @@
 
 			Assert.AreEqual("1.0.5.55757", versionElement?.Value, "versionElement.Value");
 			Assert.AreEqual("1.0.5.55757", productVersionElement?.Value, " productVersionElement.Value");
-			Assert.IsNull(packageVersionElement);
+			Assert.AreEqual("1.0.5.55757-RC.1", packageVersionElement?.Value, " packageVersionElement.Value");
 		}
 
 		[TestMethod]
@@ -193,7 +196,7 @@
 
 			Assert.AreEqual("1.0.5.55757", versionElement?.Value, "versionElement.Value");
 			Assert.AreEqual("1.0.5.55757", productVersionElement?.Value, " productVersionElement.Value");
-			Assert.IsNull(packageVersionElement);
+			Assert.AreEqual("1.0.5.55757-RC.1", packageVersionElement?.Value, " packageVersionElement.Value");
 		}
 
 		[TestMethod]
@@ -205,7 +208,7 @@
 
 			// Act
 			Action A = () => processor.Process("1.0.5-RC.1", 0);
-	
+
 			// Assert
 			A.Should().ThrowExactly<ArgumentException>();
 		}
@@ -233,7 +236,7 @@
 
 			Assert.AreEqual("1.0.15.21", versionElement?.Value, "versionElement.Value");
 			Assert.AreEqual("1.0.15.21", productVersionElement?.Value, " productVersionElement.Value");
-			Assert.IsNull(packageVersionElement);
+			Assert.AreEqual("1.0.15.21", packageVersionElement?.Value, " packageVersionElement.Value");
 		}
 
 		[TestMethod]
@@ -258,7 +261,7 @@
 
 			Assert.AreEqual("1.0.15", versionElement?.Value, "versionElement.Value");
 			Assert.AreEqual("1.0.15", productVersionElement?.Value, " productVersionElement.Value");
-			Assert.AreNotEqual("1.0.15", packageVersionElement?.Value, " packageVersionElement.Value");
+			Assert.AreEqual("1.0.15", packageVersionElement?.Value, " packageVersionElement.Value");
 		}
 
 		[TestMethod]
@@ -283,7 +286,108 @@
 
 			Assert.AreEqual("1.0.15.21", versionElement?.Value, "versionElement.Value");
 			Assert.AreEqual("1.0.15.21", productVersionElement?.Value, " productVersionElement.Value");
-			Assert.AreNotEqual("1.0.15.21", packageVersionElement?.Value, " packageVersionElement.Value");
+			Assert.AreEqual("1.0.15.21", packageVersionElement?.Value, " packageVersionElement.Value");
+		}
+
+		[TestMethod]
+		public void ProcessTestWix()
+		{
+			// Arrange
+			string path = "TempFolder/ProcessTestWIX.wixproj";
+			ProjectFileProcessor processor = new ProjectFileProcessor(path);
+
+			// Act
+			processor.Process("1.0.15", 21);
+
+			// Assert
+			var doc = XDocument.Load(path);
+			XNamespace ns = doc.Root.GetDefaultNamespace();
+			XmlNamespaceManager xnm = new XmlNamespaceManager(new NameTable());
+			xnm.AddNamespace("x", ns.NamespaceName);
+
+			var versionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:Version", xnm);
+			var packageVersionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:PackageVersion", xnm);
+			var productVersionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:ProductVersion", xnm);
+
+			Assert.AreEqual("1.0.15.21", versionElement?.Value, "versionElement.Value");
+			Assert.AreEqual("1.0.15.21", productVersionElement?.Value, " productVersionElement.Value");
+			Assert.IsNull(packageVersionElement);
+		}
+
+
+		[TestMethod]
+		public void ProcessTestAngular()
+		{
+			// Arrange
+			string path = "TempFolder/ProcessTestAngular.esproj";
+			ProjectFileProcessor processor = new ProjectFileProcessor(path);
+
+			// Act
+			processor.Process("1.0.15", 21);
+
+			// Assert
+			var doc = XDocument.Load(path);
+			XNamespace ns = doc.Root.GetDefaultNamespace();
+			XmlNamespaceManager xnm = new XmlNamespaceManager(new NameTable());
+			xnm.AddNamespace("x", ns.NamespaceName);
+
+			var versionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:Version", xnm);
+			var packageVersionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:PackageVersion", xnm);
+			var productVersionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:ProductVersion", xnm);
+
+			Assert.IsNull(versionElement);
+			Assert.IsNull(packageVersionElement);
+			Assert.IsNull(productVersionElement);
+		}
+
+		[TestMethod]
+		public void ProcessTestWeb()
+		{
+			// Arrange
+			string path = "TempFolder/ProcessTestWeb.csproj";
+			ProjectFileProcessor processor = new ProjectFileProcessor(path);
+
+			// Act
+			processor.Process("1.0.15", 21);
+
+			// Assert
+			var doc = XDocument.Load(path);
+			XNamespace ns = doc.Root.GetDefaultNamespace();
+			XmlNamespaceManager xnm = new XmlNamespaceManager(new NameTable());
+			xnm.AddNamespace("x", ns.NamespaceName);
+
+			var versionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:Version", xnm);
+			var packageVersionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:PackageVersion", xnm);
+			var productVersionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:ProductVersion", xnm);
+
+			Assert.AreEqual("1.0.15.21", versionElement?.Value, "versionElement.Value");
+			Assert.AreEqual("1.0.15.21", productVersionElement?.Value, " productVersionElement.Value");
+			Assert.IsNull(packageVersionElement);
+		}
+
+		[TestMethod]
+		public void ProcessTestAssembly()
+		{
+			// Arrange
+			string path = "TempFolder/ProcessTestAssembly.csproj";
+			ProjectFileProcessor processor = new ProjectFileProcessor(path);
+
+			// Act
+			processor.Process("1.0.15", 21);
+
+			// Assert
+			var doc = XDocument.Load(path);
+			XNamespace ns = doc.Root.GetDefaultNamespace();
+			XmlNamespaceManager xnm = new XmlNamespaceManager(new NameTable());
+			xnm.AddNamespace("x", ns.NamespaceName);
+
+			var versionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:Version", xnm);
+			var packageVersionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:PackageVersion", xnm);
+			var productVersionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:ProductVersion", xnm);
+
+			Assert.AreEqual("1.0.15.21", versionElement?.Value, "versionElement.Value");
+			Assert.AreEqual("1.0.15.21", productVersionElement?.Value, " productVersionElement.Value");
+			Assert.IsNull(packageVersionElement);
 		}
 	}
 }

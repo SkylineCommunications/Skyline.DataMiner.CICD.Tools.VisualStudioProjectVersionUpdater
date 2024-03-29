@@ -153,8 +153,8 @@
 			}
 
 			var baseVersion = splitVersion[0];
-			bool hasPreRelease = splitVersion.Length == 2;
-			if (hasPreRelease && revision == 0)
+			bool hasPreReleaseInVersion = splitVersion.Length == 2;
+			if (hasPreReleaseInVersion && revision == 0)
 			{
 				throw new ArgumentException("Pre-release version requires a non-zero revision number.", nameof(revision));
 			}
@@ -187,13 +187,20 @@
 			UpdateProjectProperty(ns + "Version", newVersion.ToString(), propertyGroupElement);
 			UpdateProjectProperty(ns + "ProductVersion", newVersion.ToString(), propertyGroupElement);
 
-			if (hasPreRelease)
+			if (hasPreReleaseInVersion)
 			{
 				UpdateProjectProperty(ns + "PackageVersion", newVersion.ToString() + "-" + splitVersion[1], propertyGroupElement);
 			}
 			else
 			{
-				UpdateProjectProperty(ns + "PackageVersion", newVersion.ToString(), propertyGroupElement);
+				if (revision != 0)
+				{
+					UpdateProjectProperty(ns + "PackageVersion", newVersion.ToString() + "-prerelease", propertyGroupElement);
+				}
+				else
+				{
+					UpdateProjectProperty(ns + "PackageVersion", newVersion.ToString(), propertyGroupElement);
+				}
 			}
 
 			Console.WriteLine($"Updated File {FileSystem.Instance.Path.GetFileName(projectFile)} to version:{newVersion.ToString()}");

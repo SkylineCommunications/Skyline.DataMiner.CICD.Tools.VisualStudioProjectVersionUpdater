@@ -82,7 +82,7 @@
 
 			Assert.AreEqual("1.0.15.21", versionElement?.Value, "versionElement.Value");
 			Assert.AreEqual("1.0.15.21", productVersionElement?.Value, " productVersionElement.Value");
-			Assert.AreEqual("1.0.15.21", packageVersionElement?.Value, " packageVersionElement.Value");
+			Assert.AreEqual("1.0.15.21-prerelease", packageVersionElement?.Value, " packageVersionElement.Value");
 		}
 
 		[TestMethod]
@@ -236,7 +236,7 @@
 
 			Assert.AreEqual("1.0.15.21", versionElement?.Value, "versionElement.Value");
 			Assert.AreEqual("1.0.15.21", productVersionElement?.Value, " productVersionElement.Value");
-			Assert.AreEqual("1.0.15.21", packageVersionElement?.Value, " packageVersionElement.Value");
+			Assert.AreEqual("1.0.15.21-prerelease", packageVersionElement?.Value, " packageVersionElement.Value");
 		}
 
 		[TestMethod]
@@ -286,7 +286,7 @@
 
 			Assert.AreEqual("1.0.15.21", versionElement?.Value, "versionElement.Value");
 			Assert.AreEqual("1.0.15.21", productVersionElement?.Value, " productVersionElement.Value");
-			Assert.AreEqual("1.0.15.21", packageVersionElement?.Value, " packageVersionElement.Value");
+			Assert.AreEqual("1.0.15.21-prerelease", packageVersionElement?.Value, " packageVersionElement.Value");
 		}
 
 		[TestMethod]

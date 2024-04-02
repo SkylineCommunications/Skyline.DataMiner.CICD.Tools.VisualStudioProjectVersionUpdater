@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DataMinerMessageBroker.API" Version="1.5.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataAggregator.Application\DataAggregator.Application.csproj" />
+    <ProjectReference Include="..\DataAggregator.CoreGatewayApi\DataAggregator.CoreGatewayApi.csproj" />
+  </ItemGroup>
+
+</Project>

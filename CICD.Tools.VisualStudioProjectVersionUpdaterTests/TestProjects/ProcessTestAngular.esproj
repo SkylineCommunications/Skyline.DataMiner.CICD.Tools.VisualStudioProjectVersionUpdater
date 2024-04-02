@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/0.5.271090-alpha">
+  <PropertyGroup>
+    <StartupCommand>npm start</StartupCommand>
+    <JavaScriptTestFramework>Jasmine</JavaScriptTestFramework>
+    <!-- Allows the build (or compile) script located on package.json to run on Build -->
+    <!-- Note: Once this repository is hosted on Azure, this setting can be set to true. Then WiX harvesting of the dist/data-sources folder can be performed instead of having the resulting Angular app stored in the wwwroot folder in the repo.-->
+    <!-- Note: This project is currently not enabled in the build configuration. To enable, go to Build > Configuration Manager and check the checkboxes for the project on both Debug and Release mode. -->
+      <ShouldRunBuildScript>true</ShouldRunBuildScript>
+    <!-- Folder where production build objects will be placed -->
+    <BuildOutputFolder>$(MSBuildProjectDirectory)\dist\DataAggregator.Angular\</BuildOutputFolder>
+  </PropertyGroup>
+</Project>

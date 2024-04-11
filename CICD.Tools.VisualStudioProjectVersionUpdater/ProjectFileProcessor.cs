@@ -42,7 +42,15 @@
         public void Process(string version, int buildNumber)
         {
             var sdkAttribute = root.Attribute("Sdk");
-            if (sdkAttribute == null) return;
+            if (sdkAttribute == null)
+            {
+                // Fallback, check import
+                sdkAttribute = root.Element("Import")?.Attribute("Sdk");
+            }
+
+            if(sdkAttribute == null)
+                return;
+
 
 
             if (sdkAttribute.Value.StartsWith("Microsoft.NET.Sdk") || sdkAttribute.Value.StartsWith("WixToolset.Sdk"))
@@ -58,7 +66,19 @@
                 }
                 else
                 {
-                    var propGroup = projectFileDocument.Root?.Elements(ns + "PropertyGroup").FirstOrDefault();
+
+                    // Find either ProductVersion or Version
+                    var propGroup = projectFileDocument.Root?.Descendants(ns + "ProductVersion").FirstOrDefault()?.Parent;
+
+                    if (propGroup == null)
+                    {
+                        propGroup = projectFileDocument.Root?.Descendants(ns + "Version").FirstOrDefault()?.Parent;
+                    }
+                    if (propGroup == null)
+                    {
+                        propGroup = projectFileDocument.Root?.Elements(ns + "PropertyGroup").FirstOrDefault();
+                    }
+
                     SetVersion(version, buildNumber, propGroup);
                 }
             }

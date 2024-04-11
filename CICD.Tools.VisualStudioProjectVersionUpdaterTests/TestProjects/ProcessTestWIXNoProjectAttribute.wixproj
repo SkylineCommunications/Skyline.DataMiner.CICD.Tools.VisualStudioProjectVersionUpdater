@@ -1,0 +1,71 @@
+﻿<Project>
+    <Import Project="Sdk.props" Sdk="WixToolset.Sdk" Version="4.0.4" />
+    <PropertyGroup>
+        <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    </PropertyGroup>
+    <PropertyGroup>
+        <ProductVersion>1.0.0</ProductVersion>
+        <OutputName>DataMiner DataAPI $(ProductVersion)</OutputName>
+        <InstallerPlatform>x64</InstallerPlatform>
+        <Name>Data.API.Installer</Name>
+        <OutputPath>bin\$(Configuration)\</OutputPath>
+        <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+        <DefineConstants>Debug;ProductVersion=$(ProductVersion);publishDir=..\Data.API\src\Data.API\bin\$(Configuration)\net8.0</DefineConstants>
+        <WixVariables>ProductVersion=$(ProductVersion);publishDir=$(publishDir);WixUIBannerBmp=Resources\Banner.jpg;WixUIDialogBmp=Resources\Dialog.jpg;WixUILicenseRtf=Resources\EULA.rtf</WixVariables>
+    </PropertyGroup>
+    <ItemGroup>
+        <Folder Include="Resources" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Code\Product.wxs" />
+        <Compile Include="Code\Features.wxs" />
+        <Compile Include="Code\UI.wxs" />
+        <Compile Include="Code\UI-CustomDialog.wxs" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="Code\Variables.wxi" />
+        <Content Include="Resources\Banner.jpg" />
+        <Content Include="Resources\Dialog.jpg" />
+        <Content Include="Resources\EULA.rtf" />
+        <Content Include="Resources\Icon.ico" />
+        <None Include="HeatTransform.xslt" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="WixToolset.UI.wixext" Version="4.0.4" />
+        <PackageReference Include="WixToolset.Util.wixext" Version="4.0.4" />
+        <PackageReference Include="WixToolset.Heat" Version="4.0.4" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Data.API\src\Data.API\Data.API.csproj">
+            <Name>DataAPI</Name>
+            <Project>{722e5e1a-4f76-453e-8c9c-c7bf1b5bb6e7}</Project>
+            <Private>True</Private>
+            <DoNotHarvest>True</DoNotHarvest>
+            <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+            <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+        </ProjectReference>
+    </ItemGroup>
+    <Import Project="Sdk.targets" Sdk="WixToolset.Sdk" Version="4.0.4" />
+    <Target Name="BeforeBuild">
+        <!-- Optional publishing of webApp you actually want to install.-->
+        <!--<Exec Command="dotnet publish $(SolutionDir)Path\To\My\app.csproj -c $(Configuration) -p:PublishProfile=$(Configuration)" />-->
+        <PropertyGroup>
+            <HarvestDirectoryAutogenerateGuids>true</HarvestDirectoryAutogenerateGuids>
+            <HarvestDirectorySuppressFragments>true</HarvestDirectorySuppressFragments>
+            <!-- HarvestDirectorySuppressUniqueIds: Makes it more readable, set to false if you have problems -->
+            <HarvestDirectorySuppressUniqueIds>true</HarvestDirectorySuppressUniqueIds>
+        </PropertyGroup>
+        <ItemGroup>
+            <HarvestDirectory Include="$(SolutionDir)Data.API\src\Data.API\bin\$(Configuration)\net8.0">
+                <PreprocessorVariable>var.publishDir</PreprocessorVariable>
+                <Transforms>$(ProjectDir)HeatTransform.xslt</Transforms>
+                <SuppressRegistry>true</SuppressRegistry>
+                <SuppressRootDirectory>true</SuppressRootDirectory>
+                <SuppressCom>true</SuppressCom>
+                <KeepEmptyDirectories>true</KeepEmptyDirectories>
+                <ComponentGroupName>FileComponents</ComponentGroupName>
+                <DirectoryRefId>INSTALLLOCATION</DirectoryRefId>
+            </HarvestDirectory>
+        </ItemGroup>
+    </Target>
+</Project>

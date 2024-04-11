@@ -288,7 +288,32 @@
             Assert.AreEqual("1.0.15.21", productVersionElement?.Value, " productVersionElement.Value");
             Assert.IsNull(packageVersionElement);
         }
-        
+
+        [TestMethod]
+        public void ProcessTestWixNoProjectAttribute()
+        {
+            // Arrange
+            string path = "TestProjects/ProcessTestWIXNoProjectAttribute.wixproj";
+            ProjectFileProcessor processor = new ProjectFileProcessor(path);
+
+            // Act
+            processor.Process("1.0.15", 21);
+
+            // Assert
+            var doc = XDocument.Load(path);
+            XNamespace ns = doc.Root!.GetDefaultNamespace();
+            XmlNamespaceManager xnm = new XmlNamespaceManager(new NameTable());
+            xnm.AddNamespace("x", ns.NamespaceName);
+
+            var versionElement = doc.Descendants(ns + "Version").FirstOrDefault();
+            var packageVersionElement = doc.Descendants(ns + "PackageVersion").FirstOrDefault();
+            var productVersionElement = doc.Descendants(ns + "ProductVersion").FirstOrDefault();
+
+            Assert.AreEqual("1.0.15.21", versionElement?.Value, "versionElement.Value");
+            Assert.AreEqual("1.0.15.21", productVersionElement?.Value, " productVersionElement.Value");
+            Assert.IsNull(packageVersionElement);
+        }
+
         [TestMethod]
         public void ProcessTestAngular()
         {

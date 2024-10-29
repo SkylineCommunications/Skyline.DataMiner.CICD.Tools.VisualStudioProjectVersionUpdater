@@ -12,14 +12,16 @@
     public class ProjectFileProcessorTests
     {
         [TestMethod]
-        public void ProcessTestRelease_OnlyVersion()
+        [DataRow("1.0.15", "1.0.15", "1.0.15", "1.0.15")]
+        [DataRow("1.0.15.1234", "1.0.15.1234", "1.0.15.1234", "1.0.15.1234")]
+        public void ProcessTestRelease_OnlyVersion(string inputVersion, string expectedVersion, string expectedProductVersion, string expectedPackageVersion)
         {
             // Arrange
             string path = "TestProjects/ProcessTestRelease_OnlyVersion.csproj";
             ProjectFileProcessor processor = new ProjectFileProcessor(path);
 
             // Act
-            processor.Process("1.0.15", 0);
+            processor.Process(inputVersion, 0);
 
             // Assert
             var doc = XDocument.Load(path);
@@ -31,9 +33,9 @@
             var packageVersionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:PackageVersion", xnm);
             var productVersionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:ProductVersion", xnm);
 
-            Assert.AreEqual("1.0.15", versionElement?.Value, "versionElement.Value");
-            Assert.AreEqual("1.0.15", productVersionElement?.Value, " productVersionElement.Value");
-            Assert.AreEqual("1.0.15", packageVersionElement?.Value, " packageVersionElement.Value");
+            Assert.AreEqual(expectedVersion, versionElement?.Value, "versionElement.Value");
+            Assert.AreEqual(expectedProductVersion, productVersionElement?.Value, " productVersionElement.Value");
+            Assert.AreEqual(expectedPackageVersion, packageVersionElement?.Value, " packageVersionElement.Value");
         }
 
         [TestMethod]
@@ -62,14 +64,16 @@
         }
 
         [TestMethod]
-        public void ProcessTestRelease_Nothing()
+        [DataRow("1.0.15", "1.0.15", "1.0.15", "1.0.15")]
+        [DataRow("1.0.15.1234", "1.0.15.1234", "1.0.15.1234", "1.0.15.1234")]
+        public void ProcessTestRelease_Nothing(string inputVersion, string expectedVersion, string expectedProductVersion, string expectedPackageVersion)
         {
             // Arrange
             string path = "TestProjects/ProcessTestRelease_Nothing.csproj";
             ProjectFileProcessor processor = new ProjectFileProcessor(path);
 
             // Act
-            processor.Process("1.0.15", 0);
+            processor.Process(inputVersion, 0);
 
             // Assert
             var doc = XDocument.Load(path);
@@ -81,9 +85,9 @@
             var packageVersionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:PackageVersion", xnm);
             var productVersionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:ProductVersion", xnm);
 
-            Assert.AreEqual("1.0.15", versionElement?.Value, "versionElement.Value");
-            Assert.AreEqual("1.0.15", productVersionElement?.Value, " productVersionElement.Value");
-            Assert.AreEqual("1.0.15", packageVersionElement?.Value, " packageVersionElement.Value");
+            Assert.AreEqual(expectedVersion, versionElement?.Value, "versionElement.Value");
+            Assert.AreEqual(expectedProductVersion, productVersionElement?.Value, " productVersionElement.Value");
+            Assert.AreEqual(expectedPackageVersion, packageVersionElement?.Value, " packageVersionElement.Value");
         }
 
         [TestMethod]
@@ -215,14 +219,16 @@
         }
 
         [TestMethod]
-        public void ProcessTestRelease_OnlyPackageVersion()
+        [DataRow("1.0.15", "1.0.15", "1.0.15", "1.0.15")]
+        [DataRow("1.0.15.1234", "1.0.15.1234", "1.0.15.1234", "1.0.15.1234")]
+        public void ProcessTestRelease_OnlyPackageVersion(string inputVersion, string expectedVersion, string expectedProductVersion, string expectedPackageVersion)
         {
             // Arrange
             string path = "TestProjects/ProcessTestRelease_OnlyPackageVersion.csproj";
             ProjectFileProcessor processor = new ProjectFileProcessor(path);
 
             // Act
-            processor.Process("1.0.15", 0);
+            processor.Process(inputVersion, 0);
 
             // Assert
             var doc = XDocument.Load(path);
@@ -234,9 +240,9 @@
             var packageVersionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:PackageVersion", xnm);
             var productVersionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:ProductVersion", xnm);
 
-            Assert.AreEqual("1.0.15", versionElement?.Value, "versionElement.Value");
-            Assert.AreEqual("1.0.15", productVersionElement?.Value, " productVersionElement.Value");
-            Assert.AreEqual("1.0.15", packageVersionElement?.Value, " packageVersionElement.Value");
+            Assert.AreEqual(expectedVersion, versionElement?.Value, "versionElement.Value");
+            Assert.AreEqual(expectedProductVersion, productVersionElement?.Value, " productVersionElement.Value");
+            Assert.AreEqual(expectedPackageVersion, packageVersionElement?.Value, " packageVersionElement.Value");
         }
 
         [TestMethod]
@@ -340,14 +346,19 @@
         }
 
         [TestMethod]
-        public void ProcessTestWeb()
+        [DataRow("1.0.15", 0, "1.0.15", "1.0.15")]
+        [DataRow("1.0.15", 21, "1.0.15.21", "1.0.15.21")]
+        [DataRow("1.0.15.1234", 0, "1.0.15.1234", "1.0.15.1234")]
+        [DataRow("1.0.15.1234", 21, "1.0.15.21", "1.0.15.21")]
+        public void ProcessTestWeb(string inputVersion, int buildNumber, string expectedVersion, string expectedProductVersion)
+
         {
             // Arrange
             string path = "TestProjects/ProcessTestWeb.csproj";
             ProjectFileProcessor processor = new ProjectFileProcessor(path);
 
             // Act
-            processor.Process("1.0.15", 21);
+            processor.Process(inputVersion, buildNumber);
 
             // Assert
             var doc = XDocument.Load(path);
@@ -359,20 +370,24 @@
             var packageVersionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:PackageVersion", xnm);
             var productVersionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:ProductVersion", xnm);
 
-            Assert.AreEqual("1.0.15.21", versionElement?.Value, "versionElement.Value");
-            Assert.AreEqual("1.0.15.21", productVersionElement?.Value, " productVersionElement.Value");
+            Assert.AreEqual(expectedVersion, versionElement?.Value, "versionElement.Value");
+            Assert.AreEqual(expectedProductVersion, productVersionElement?.Value, " productVersionElement.Value");
             Assert.IsNull(packageVersionElement);
         }
 
         [TestMethod]
-        public void ProcessTestAssembly()
+        [DataRow("1.0.15", 0, "1.0.15", "1.0.15")]
+        [DataRow("1.0.15", 21, "1.0.15.21", "1.0.15.21")]
+        [DataRow("1.0.15.1234", 0, "1.0.15.1234", "1.0.15.1234")]
+        [DataRow("1.0.15.1234", 21, "1.0.15.21", "1.0.15.21")]
+        public void ProcessTestAssembly(string inputVersion, int buildNumber, string expectedVersion, string expectedProductVersion)
         {
             // Arrange
             string path = "TestProjects/ProcessTestAssembly.csproj";
             ProjectFileProcessor processor = new ProjectFileProcessor(path);
 
             // Act
-            processor.Process("1.0.15", 21);
+            processor.Process(inputVersion, buildNumber);
 
             // Assert
             var doc = XDocument.Load(path);
@@ -384,8 +399,8 @@
             var packageVersionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:PackageVersion", xnm);
             var productVersionElement = doc.XPathSelectElement("/x:Project/x:PropertyGroup/x:ProductVersion", xnm);
 
-            Assert.AreEqual("1.0.15.21", versionElement?.Value, "versionElement.Value");
-            Assert.AreEqual("1.0.15.21", productVersionElement?.Value, " productVersionElement.Value");
+            Assert.AreEqual(expectedVersion, versionElement?.Value, "versionElement.Value");
+            Assert.AreEqual(expectedProductVersion, productVersionElement?.Value, " productVersionElement.Value");
             Assert.IsNull(packageVersionElement);
         }
     }

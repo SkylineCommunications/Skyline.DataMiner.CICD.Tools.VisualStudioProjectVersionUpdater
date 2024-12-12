@@ -137,7 +137,7 @@
                 version = GenerateAutomaticVersion(workspace, revision) ?? "1.0.0";
             }
 
-            Solution solution = Solution.Load(solutionFilepath);
+            Solution solution = Solution.Load(solutionFilepath, true);
             var allProjects = solution.Projects.Select(p => p.AbsolutePath).ToList();
 
             foreach (var projectFile in allProjects)

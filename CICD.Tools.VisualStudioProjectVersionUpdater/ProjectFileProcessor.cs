@@ -141,7 +141,7 @@
             if (revision != 0)
             {
                 newVersion = new Version(
-                   Math.Clamp(parsedVersion.Major, 1, 255),
+                   Math.Clamp(parsedVersion.Major, 0, 255),
                    Math.Clamp(parsedVersion.Minor, 0, 255),
                    Math.Clamp(parsedVersion.Build, 0, 65535),
                    revision);
@@ -149,7 +149,7 @@
             else if (parsedVersion.Revision != -1)
             {
                 newVersion = new Version(
-                    Math.Clamp(parsedVersion.Major, 1, 255),
+                    Math.Clamp(parsedVersion.Major, 0, 255),
                     Math.Clamp(parsedVersion.Minor, 0, 255),
                     Math.Clamp(parsedVersion.Build, 0, 65535),
                     parsedVersion.Revision);
@@ -157,7 +157,7 @@
             else
             {
                 newVersion = new Version(
-                    Math.Clamp(parsedVersion.Major, 1, 255),
+                    Math.Clamp(parsedVersion.Major, 0, 255),
                     Math.Clamp(parsedVersion.Minor, 0, 255),
                     Math.Clamp(parsedVersion.Build, 0, 65535));
             }

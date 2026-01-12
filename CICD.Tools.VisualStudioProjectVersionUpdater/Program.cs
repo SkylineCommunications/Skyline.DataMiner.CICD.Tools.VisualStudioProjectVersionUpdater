@@ -128,6 +128,11 @@
 
             if (String.IsNullOrWhiteSpace(solutionFilepath))
             {
+                solutionFilepath = FileSystem.Instance.Directory.EnumerateFiles(workspace, "*.slnx").FirstOrDefault();
+            }
+
+            if (String.IsNullOrWhiteSpace(solutionFilepath))
+            {
                 throw new InvalidOperationException($"No solution file found in workspace: {workspace}.");
             }
 
